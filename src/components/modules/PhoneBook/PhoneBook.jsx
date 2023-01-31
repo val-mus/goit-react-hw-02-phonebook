@@ -1,22 +1,20 @@
 import { Component } from 'react';
 import { nanoid } from 'nanoid';
 import Notiflix from 'notiflix';
+
+import ContactsForm from './ContactsForm/ContactsForm';
+import ContactsList from './ContactsList/ContactsList';
+import ContactsFilter from './ContactsFilter/ContactsFilter';
+
 import styles from './phone-book.module.css';
 
 class PhoneBook extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
-    name: '',
-    number: '',
   };
 
-  isDublicate(name) {
+  isDuplicate(name) {
     const normalizedTitle = name.toLowerCase();
 
     const { contacts } = this.state;
@@ -27,15 +25,12 @@ class PhoneBook extends Component {
     return Boolean(result);
   }
 
-  addContact = e => {
-    e.preventDefault();
-    const { name, number } = this.state;
-    if (this.isDublicate(name, number)) {
-      return Notiflix.Notify.failure(`${name} is already in contacts`); // Notify.Alert(`${title}. Author: ${author} is already ixist`)
+  addContact = ({ name, number }) => {
+    if (this.isDuplicate(name)) {
+      return Notiflix.Notify.failure(`${name} is already in contacts`);
     }
-
     this.setState(prevState => {
-      const { name, number, contacts } = prevState;
+      const { contacts } = prevState;
 
       const newContacts = {
         id: nanoid(),
@@ -43,21 +38,20 @@ class PhoneBook extends Component {
         number,
       };
 
-      return { contacts: [newContacts, ...contacts], name: '', number: '' };
+      return { contacts: [newContacts, ...contacts] };
     });
   };
 
-  removeContact(id) {
+  removeContact = id => {
     this.setState(({ contacts }) => {
       const newContacts = contacts.filter(contact => contact.id !== id);
       return { contacts: newContacts };
     });
-  }
+  };
 
-  handleChange = ({ target }) => {
-    const { name, value } = target;
+  handleFilter = ({ target }) => {
     this.setState({
-      [name]: value,
+      filter: target.value,
     });
   };
 
@@ -76,76 +70,19 @@ class PhoneBook extends Component {
   }
 
   render() {
-    const { name, number } = this.state;
     const contacts = this.getFilteredContacts();
-
-    const { handleChange, addContact } = this;
-
-    const contactsList = contacts.map(({ id, name, number }) => (
-      <li key={id} className={styles.contacts__item}>
-        {name} : {number}.
-        <button
-          type="button"
-          onClick={() => this.removeContact(id)}
-          className={styles.button}
-        >
-          Delete
-        </button>
-      </li>
-    ));
+    const { handleFilter, addContact, removeContact } = this;
 
     return (
       <div>
         <div className={styles.wrapper}>
           <div>
-            <form action="" onSubmit={addContact}>
-              <div className={styles.block}>
-                <h4>Add contact</h4>
-                <label>
-                  Name
-                  <input
-                    type="text"
-                    name="name"
-                    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                    required
-                    className={styles.input}
-                    onChange={handleChange}
-                    value={name}
-                  />
-                </label>
-                <div>
-                  <label>
-                    Number
-                    <input
-                      type="tel"
-                      name="number"
-                      pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                      title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                      required
-                      className={styles.input}
-                      onChange={handleChange}
-                      value={number}
-                    />
-                  </label>
-                </div>
-                <button type="submit" className={styles.button}>
-                  Add contact
-                </button>
-              </div>
-            </form>
+            <ContactsForm onSubmit={addContact} />
           </div>
           <div className={styles.block}>
             <h4>Contacts</h4>
-            <label>
-              Find contacts
-              <input
-                name="filter"
-                className={styles.input}
-                onChange={handleChange}
-              />
-            </label>
-            <ul className={styles.contacts__list}>{contactsList}</ul>
+            <ContactsFilter handleChange={handleFilter} />
+            <ContactsList removeItem={removeContact} items={contacts} />
           </div>
         </div>
       </div>
