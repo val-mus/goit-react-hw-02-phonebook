@@ -8,7 +8,7 @@
     padding: 5px;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
 
 
     outline: 1px solid black;
@@ -22,7 +22,22 @@
 }
 
 .button{
+    padding: 5px;
     border: none;
     border-radius: 5px;
-    width: 30%;
+    max-width: 30%;
+
+    cursor: pointer;
+}
+
+.contacts__list{
+ list-style: none;
+ padding: 0px;
+
+}
+.contacts__item{
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+
 }

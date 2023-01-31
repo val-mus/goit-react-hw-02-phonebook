@@ -15,7 +15,29 @@ class PhoneBook extends Component {
     number: '',
   };
 
+  removeContact(id) {
+    this.setState(({ contacts }) => {
+      const newContacts = contacts.filter(contact => contact.id !== id);
+      return { contacts: newContacts };
+    });
+  }
+
   render() {
+    const { contacts } = this.state;
+
+    const contactsList = contacts.map(({ id, name, number }) => (
+      <li key={id} className={styles.contacts__item}>
+        {name}:{number}.
+        <button
+          type="button"
+          onClick={() => this.removeContact(id)}
+          className={styles.button}
+        >
+          Delete
+        </button>
+      </li>
+    ));
+
     return (
       <div>
         <h3>Phonebook</h3>
@@ -23,7 +45,7 @@ class PhoneBook extends Component {
           <div>
             <form action="">
               <div className={styles.block}>
-                <h4>Add contact</h4> 
+                <h4>Add contact</h4>
                 <label>
                   Name
                   <input
@@ -54,17 +76,21 @@ class PhoneBook extends Component {
               </div>
             </form>
           </div>
-          {/* <div className={styles.block}>
-            <div className={styles.formGroup}>
-              <label>Filter books</label>
+          <div className={styles.block}>
+            <h4>Contacts</h4>
+            <label>
+              Find contacts
               <input
-                name="filter"
-                onChange={handleChange}
-                placeholder="Filter books"
+                type="tel"
+                name="number"
+                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+                required
+                className={styles.input}
               />
-            </div>
-            <ol>{books}</ol>
-          </div> */}
+            </label>
+            <ul className={styles.contacts__list}>{contactsList}</ul>
+          </div>
         </div>
       </div>
     );
