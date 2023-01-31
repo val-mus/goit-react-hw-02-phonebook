@@ -40,7 +40,6 @@ class PhoneBook extends Component {
 
     return (
       <div>
-        <h3>Phonebook</h3>
         <div className={styles.wrapper}>
           <div>
             <form action="">
