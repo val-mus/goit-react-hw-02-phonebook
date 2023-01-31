@@ -1,0 +1,28 @@
+.wrapper {
+    display: grid;
+    grid-template-columns: 300px 300px;
+    gap: 30px;
+}
+
+.block {
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+
+    outline: 1px solid black;
+
+    border-radius: 5px;
+}
+
+.input {
+    border-radius: 5px;
+    margin-left: 5px;
+}
+
+.button{
+    border: none;
+    border-radius: 5px;
+    width: 30%;
+}
